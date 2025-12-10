@@ -91,7 +91,7 @@ model Company {
   jobs           Job[]
   company_tags    CompanyToTags[]
 
-  user_id       Int
+  user_id       Int     @unique
   user          User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("company")
@@ -130,6 +130,7 @@ model Job {
   company       Company       @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
   job_tags JobToTag[]
+  applications Application[]
 
   @@map("jobs")
 }
