@@ -11,9 +11,12 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  //! ignore error ini, hapus ngak bisa migrate
+  //! cuman warning ae, ngak ngerusak DB
   url      = env("DATABASE_URL")
 }
 
+// User
 model User {
   id            Int             @id @default(autoincrement()) @map("user_id")
   email         String          @unique @db.VarChar(255)
@@ -21,14 +24,22 @@ model User {
   name          String          @db.VarChar(100)
   address       String?         @db.VarChar(255)
   phone_number  String?         @db.VarChar(20)
+
   notifications Notification[]
   experiences   Experience[]
   achievements  Achievement[]
   applications  Application[]
 
+  // Prisma Optional 
+  //* jadi e sebuah user bisa saja
+  //* tidak mempunya company
+  //! Maks 1 akun 1 company
+  company Company?
+
   @@map("users")
 }
 
+// Notification
 model Notification {
   id              Int     @id @default(autoincrement()) @map("notification_id")
   title           String  @db.VarChar(100)
@@ -39,6 +50,7 @@ model Notification {
   @@map("notifications")
 }
 
+// Experience
 model Experience {
   id            Int     @id @default(autoincrement()) @map("experience_id")
   title         String  @db.VarChar(100)
@@ -49,19 +61,23 @@ model Experience {
   @@map("experiences")
 }
 
+// Achievement
 model Achievement {
   id            Int           @id @default(autoincrement()) @map("achievement_id")
   title         String        @db.VarChar(100)
   description   String?       @db.Text
-  applications  Application[]
+  user_id       Int
+  user          User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("achievements")
 }
 
+// ================================================================================================================
+
+//Company
 model Company {
   id              Int           @id @default(autoincrement()) @map("company_id")
   email           String        @unique @db.VarChar(255)
-  password        String        @db.VarChar(255)
   name            String        @db.VarChar(100)
   address         String?       @db.VarChar(255)
   phone_number    String?       @db.VarChar(20)
@@ -71,53 +87,87 @@ model Company {
   founding_date   DateTime?     @db.Date
   logo_path       String?       @db.VarChar(255)
   image_path      String?       @db.VarChar(255)
-  jobs            Job[]
-  company_tags    CompanyTag[]
 
-  @@map("companies")
+  jobs           Job[]
+  company_tags    CompanyToTags[]
+
+  user_id       Int
+  user          User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("company")
 }
 
+//! COMPANY <-> TAGS 
+model CompanyToTags {
+  company_id      Int
+  company_tag_id  Int
+
+  company         Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  company_tag     CompanyTag @relation(fields: [company_tag_id], references: [id], onDelete: Cascade)
+
+  @@id([company_id, company_tag_id])
+  @@map("company_to_tag")
+}
+
+//Company Tag
 model CompanyTag {
   id          Int     @id @default(autoincrement()) @map("company_tag_id")
   name        String  @db.VarChar(50)
-  company_id  Int
-  company     Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
 
-  @@map("company_tags")
+  companies    CompanyToTags[]
+
+  @@map("company_tag")
 }
 
+// ================================================================================================================
+
+//Model Job
 model Job {
   id            Int           @id @default(autoincrement()) @map("job_id")
   name          String        @db.VarChar(100)
   description   String?       @db.Text
   company_id    Int
   company       Company       @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  applications  Application[]
-  job_tags      JobTag[]
+
+  job_tags JobToTag[]
 
   @@map("jobs")
 }
 
+//!PIVOT TABLE
+model JobToTag {
+
+  job_id      Int
+  tag_id      Int
+
+  job         Job @relation(fields: [job_id], references: [id], onDelete: Cascade)
+  tag         JobTag @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@id([job_id, tag_id])
+  @@map("job_to_tag")
+}
+
+//*Model Tag (JobTags -> Tag)
 model JobTag {
   id       Int    @id @default(autoincrement()) @map("job_tag_id")
   name     String @db.VarChar(50)
-  job_id   Int
-  job      Job    @relation(fields: [job_id], references: [id], onDelete: Cascade)
 
-  @@map("job_tags")
+  jobs     JobToTag[]
+
+  @@map("job_tag")
 }
 
+
+//!Application PIVOT TABLE
 model Application {
   id              Int         @id @default(autoincrement()) @map("application_id")
   status          String      @db.VarChar(20)
   user_id         Int
   job_id          Int
-  achievement_id  Int
+
   user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
   job             Job         @relation(fields: [job_id], references: [id], onDelete: Cascade)
-  achievement     Achievement @relation(fields: [achievement_id], references: [id], onDelete: Cascade)
 
   @@map("applications")
 }
-
 
