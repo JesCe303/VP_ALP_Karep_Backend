@@ -14,5 +14,110 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            Int             @id @default(autoincrement()) @map("user_id")
+  email         String          @unique @db.VarChar(255)
+  password      String          @db.VarChar(255)
+  name          String          @db.VarChar(100)
+  address       String?         @db.VarChar(255)
+  phone_number  String?         @db.VarChar(20)
+  notifications Notification[]
+  experiences   Experience[]
+  achievements  Achievement[]
+  applications  Application[]
+
+  @@map("users")
+}
+
+model Notification {
+  id              Int     @id @default(autoincrement()) @map("notification_id")
+  title           String  @db.VarChar(100)
+  subtitle        String? @db.Text
+  user_id         Int
+  user            User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Experience {
+  id            Int     @id @default(autoincrement()) @map("experience_id")
+  title         String  @db.VarChar(100)
+  description   String? @db.Text
+  user_id       Int
+  user          User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("experiences")
+}
+
+model Achievement {
+  id            Int           @id @default(autoincrement()) @map("achievement_id")
+  title         String        @db.VarChar(100)
+  description   String?       @db.Text
+  applications  Application[]
+
+  @@map("achievements")
+}
+
+model Company {
+  id              Int           @id @default(autoincrement()) @map("company_id")
+  email           String        @unique @db.VarChar(255)
+  password        String        @db.VarChar(255)
+  name            String        @db.VarChar(100)
+  address         String?       @db.VarChar(255)
+  phone_number    String?       @db.VarChar(20)
+  website         String?       @db.VarChar(255)
+  vision_mission  String?       @db.Text
+  description     String?       @db.Text
+  founding_date   DateTime?     @db.Date
+  logo_path       String?       @db.VarChar(255)
+  image_path      String?       @db.VarChar(255)
+  jobs            Job[]
+  company_tags    CompanyTag[]
+
+  @@map("companies")
+}
+
+model CompanyTag {
+  id          Int     @id @default(autoincrement()) @map("company_tag_id")
+  name        String  @db.VarChar(50)
+  company_id  Int
+  company     Company @relation(fields: [company_id], references: [id], onDelete: Cascade)
+
+  @@map("company_tags")
+}
+
+model Job {
+  id            Int           @id @default(autoincrement()) @map("job_id")
+  name          String        @db.VarChar(100)
+  description   String?       @db.Text
+  company_id    Int
+  company       Company       @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  applications  Application[]
+  job_tags      JobTag[]
+
+  @@map("jobs")
+}
+
+model JobTag {
+  id       Int    @id @default(autoincrement()) @map("job_tag_id")
+  name     String @db.VarChar(50)
+  job_id   Int
+  job      Job    @relation(fields: [job_id], references: [id], onDelete: Cascade)
+
+  @@map("job_tags")
+}
+
+model Application {
+  id              Int         @id @default(autoincrement()) @map("application_id")
+  status          String      @db.VarChar(20)
+  user_id         Int
+  job_id          Int
+  achievement_id  Int
+  user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  job             Job         @relation(fields: [job_id], references: [id], onDelete: Cascade)
+  achievement     Achievement @relation(fields: [achievement_id], references: [id], onDelete: Cascade)
+
+  @@map("applications")
+}
 
 
