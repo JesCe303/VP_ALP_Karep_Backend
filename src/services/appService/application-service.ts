@@ -5,15 +5,10 @@ import { prismaClient } from "../../util/database-util";
 
 export class ApplicationService {
     //hiring user application on hiring
-    static async hiringApplication(user: UserJWTPayload, reqData: ApplicationCreate): Promise<ApplicationResponse> {
-        //Check user if exist
-        if(reqData.user_id !== user.id) {
-            throw new ResponseError(403, "Invalid user id!")
-        }
-
+    static async hiringApplications(user: UserJWTPayload, jobId: number): Promise<ApplicationResponse> {
         //Check job is exist in the DB
         const job = await prismaClient.job.findFirst({
-            where: { id: reqData.job_id }
+            where: { id: jobId }
         })
 
         if (!job) {
@@ -24,7 +19,7 @@ export class ApplicationService {
         //is the same, so double hiring which is an illegal action
         const exist = await prismaClient.application.findFirst({
             where: {
-                job_id: reqData.job_id,
+                job_id: jobId,
                 user_id: user.id
             }
         });
@@ -35,7 +30,7 @@ export class ApplicationService {
                 data: {
                     status: "pending",
                     user_id: user.id,
-                    job_id: reqData.job_id
+                    job_id: jobId
                 },
                 include: {
                     job: {
@@ -49,7 +44,7 @@ export class ApplicationService {
             return toApplicationResponse(app);
     }
 
-    static async getMyApplication(user: UserJWTPayload): Promise<ApplicationResponse[]> {
+    static async getMyApplications(user: UserJWTPayload): Promise<ApplicationResponse[]> {
         const apps = await prismaClient.application.findMany({
             where: { user_id: user.id },
             orderBy: { id: "asc" },
