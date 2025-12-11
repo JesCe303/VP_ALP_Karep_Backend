@@ -7,7 +7,7 @@ export class ApplicationController {
             const user = req.user!;
             const jobId = Number(req.params.jobId);
 
-            const response = await ApplicationService.hiringApplications(user, jobId)
+            const response = await ApplicationService.hiringApplication(user, jobId)
 
             res.status(200).json({
                 message: "You have applied to the job, please wait"

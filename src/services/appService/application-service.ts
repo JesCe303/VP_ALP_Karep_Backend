@@ -5,7 +5,7 @@ import { prismaClient } from "../../util/database-util";
 
 export class ApplicationService {
     //hiring user application on hiring
-    static async hiringApplications(user: UserJWTPayload, jobId: number): Promise<ApplicationResponse> {
+    static async hiringApplication(user: UserJWTPayload, jobId: number): Promise<ApplicationResponse> {
         //Check job is exist in the DB
         const job = await prismaClient.job.findFirst({
             where: { id: jobId }
