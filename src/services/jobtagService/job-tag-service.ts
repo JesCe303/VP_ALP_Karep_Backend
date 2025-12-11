@@ -13,7 +13,7 @@ export class JobTagService{
     }
 
     static async createJobTag(user: UserJWTPayload, reqData: JobTagCreate): Promise<string> {
-        this.isUserCompany(user);
+        await this.isUserCompany(user);
         const validatedInput = Validation.validate(JobTagValidation.CREATE, reqData);
         await prismaClient.jobTag.create({
             data: {
