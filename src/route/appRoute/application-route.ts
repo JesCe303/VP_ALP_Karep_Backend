@@ -1,5 +1,10 @@
 import express from "express"
+import { authMiddleware } from "../../middleware/auth-middleware";
 
-export const appRoute = express.Router();
+export const appRouter = express.Router();
 
-//appRouter
+appRouter.use(authMiddleware)
+
+appRouter.get("/application-list")
+appRouter.post("/application/:jobId")
+appRouter.patch("/application/:idApp")
