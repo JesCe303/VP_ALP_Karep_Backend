@@ -1,6 +1,6 @@
 import express from "express"
-import { PORT } from "../utils/env-util"
-import { publicRouter } from "./router/public-api"
+import { PORT } from "./util/env-util";
+import { publicRouter } from "./route/publicRouter";
 import { errorMiddleware } from "./middleware/error-middleware"
 
 console.log("hai aku jece");
