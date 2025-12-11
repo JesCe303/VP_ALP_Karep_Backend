@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { ApplicationService } from "../../services/appService/application-service";
+import { UserRequest } from "../../model/user-request-model";
 
 export class ApplicationController {
-    static async hiringApplication(req: Request, res: Response, next: NextFunction) {
+    static async hiringApplication(req: UserRequest, res: Response, next: NextFunction) {
         try {
             const user = req.user!;
             const jobId = Number(req.params.jobId);
@@ -17,7 +18,7 @@ export class ApplicationController {
         }
     }
 
-    static async getMyApplication(req: Request, res: Response, next: NextFunction) {
+    static async getMyApplication(req: UserRequest, res: Response, next: NextFunction) {
         try {
             const user = req.user!;
             
@@ -27,7 +28,7 @@ export class ApplicationController {
         }
     }
 
-    static async cancelApplication(req: Request, res: Response, next: NextFunction) {
+    static async cancelApplication(req: UserRequest, res: Response, next: NextFunction) {
         try {
             const user = req.user!;
             const idApp = Number(req.params.idApp);

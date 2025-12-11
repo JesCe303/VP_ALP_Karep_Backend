@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { JobService } from "../../services/jobService/job-service";
+import { UserRequest } from "../../model/user-request-model";
 
 export class JobController {
     static async getAllJobs(req: Request, res: Response, next: NextFunction) {
@@ -13,7 +14,7 @@ export class JobController {
         }
     }
 
-    static async getAllJobsByCompany(req: Request, res: Response, next: NextFunction) {
+    static async getAllJobsByCompany(req: UserRequest, res: Response, next: NextFunction) {
         try {
             const user = req.user!
             const response = await JobService.getAllJobsByCompany(user)
@@ -34,7 +35,7 @@ export class JobController {
         }
     }
 
-    static async createJob(req: Request, res: Response, next: NextFunction) {
+    static async createJob(req: UserRequest, res: Response, next: NextFunction) {
         try {
             const user = req.user!
             const request = req.body
@@ -48,7 +49,7 @@ export class JobController {
         }
     }
 
-    static async updateJob(req: Request, res: Response, next: NextFunction) {
+    static async updateJob(req: UserRequest, res: Response, next: NextFunction) {
         try {
             const user = req.user!;
             const request = req.body;
