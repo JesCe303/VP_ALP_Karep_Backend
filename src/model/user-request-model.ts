@@ -1,5 +1,10 @@
 import { Request } from "express";
-import { UserJWTPayload } from "./model";
+
+export interface UserJWTPayload {
+    id: number;
+    name: string;
+    email: string
+}
 
 export interface UserRequest extends Request {
     user?: UserJWTPayload
