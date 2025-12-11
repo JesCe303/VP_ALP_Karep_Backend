@@ -2,6 +2,9 @@ import express from "express"
 import { PORT } from "./util/env-util";
 import { publicRouter } from "./route/publicRouter";
 import { errorMiddleware } from "./middleware/error-middleware"
+import { jobtagRouter } from "./route/jobTagRoute/job-tag-route";
+import { jobRouter } from "./route/jobRoute/job-route";
+import { appRouter } from "./route/appRoute/application-route";
 
 console.log("hai aku jece");
 
@@ -13,6 +16,9 @@ app.use(express.json())
 app.set('json spaces', 2);
 
 app.use("/api", publicRouter)
+app.use("/api", jobtagRouter)
+app.use("/api", jobRouter)
+app.use("/api", appRouter)
 
 app.use(errorMiddleware)
 
