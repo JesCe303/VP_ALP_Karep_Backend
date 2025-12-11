@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
-import { UserRequest } from "../models/user-request-model";
+import { UserRequest } from "../model/user-request-model";
 import { ResponseError } from "../error/response-error";
-import { verifyToken } from "../util/env-util";
+import { verifyToken } from "../util/jwt-util";
 
 //Why do we use the req with data from UserRequest?
 //because we extend to the Request at the user-request-model
