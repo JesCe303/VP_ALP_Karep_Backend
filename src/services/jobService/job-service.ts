@@ -173,6 +173,33 @@ export class JobService {
         return toJobResponseList(jobs)
     }
 
+    static async deleteJob(user: UserJWTPayload, jobId: number) {
+        await this.isUserCompany(user);
+
+        const company = await prismaClient.company.findFirst({
+            where: { user_id: user.id }
+        });
+
+        if(!company) {
+            throw new ResponseError(404, "Company is NOT founded")
+        }
+
+        const jobExist = await prismaClient.job.findFirst({
+            where: {
+                id: jobId,
+                company_id: company.id
+            }
+        });
+
+        if(!jobExist) {
+            throw new ResponseError(404, "Job not found!")
+        }
+
+        await prismaClient.job.delete({
+            where: { id: jobId }
+        })
+    }
+
     
     static async isUserCompany(user: UserJWTPayload) {
         const dbUser = await prismaClient.user.findUnique({

@@ -78,4 +78,16 @@ export class JobController {
             next(error);
         }
     }
+    
+    static async deleteJob(req: UserRequest, res: Response, next: NextFunction) {
+        try {
+            const jobId = Number(req.params.jobId);
+            const response = await JobService.deleteJob(req.user!, jobId)
+            res.status(200).json({
+                message: "Job deleted"
+            })
+        } catch (error) {
+            next(error);
+        }
+    }
 }
