@@ -1,3 +1,5 @@
+//TODO: Hapus file ini, hanya untuk buat saya bisa login saja - Joel
+
 import { Request, Response, NextFunction } from "express";
 import { generateToken } from "../util/jwt-util";
 import { UserJWTPayload } from "../model/user-request-model";

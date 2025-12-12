@@ -1,3 +1,5 @@
+//TODO: Hapus file ini, hanya untuk buat saya bisa login saja - Joel
+
 import { Request } from "express";
 
 export interface UserJWTPayload {
