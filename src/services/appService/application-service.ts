@@ -105,6 +105,29 @@ export class ApplicationService {
         return toApplicationResponse(updated);
     }
 
+    static async deleteApplication(user: UserJWTPayload, idApp: number) {
+        await this.checkIfCompany(user)
+        const application = await prismaClient.application.findFirst({
+            where: { id: idApp }
+        })
+
+        if(!application) {
+            throw new ResponseError(404, "No application is detected")
+        }
+
+        if(application.status !== "cancelled" && application.status !== "rejected") {
+            throw new ResponseError(400, "You can only delete an application that is already rejected/deleted")
+        }
+
+        if(application.user_id !== user.id) {
+            throw new ResponseError(403, "Unauthorized Access!")
+        }
+
+        await prismaClient.application.delete({
+            where: { id: idApp }
+        })
+    }
+
     static async checkIfCompany(user: UserJWTPayload) {
         const company = await prismaClient.company.findFirst({
             where: { user_id: user.id }

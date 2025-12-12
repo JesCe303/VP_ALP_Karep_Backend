@@ -37,6 +37,25 @@ export class ApplicationController {
             const idApp = Number(req.params.idApp);
 
             const response = await ApplicationService.cancelApplication(user, idApp)
+            
+            res.status(200).json({
+                message: "You have cancelled an application"
+            })
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async deleteApplication(req: UserRequest, res: Response, next: NextFunction) {
+        try {
+            const user = req.user!;
+            const idApp = Number(req.params.idApp);
+
+            const response = await ApplicationService.deleteApplication(user, idApp);
+
+            res.status(200).json({
+                message: "You have deleted an application"
+            })
         } catch (error) {
             next(error);
         }
