@@ -7,6 +7,9 @@ export class ApplicationService {
     //hiring user application on hiring
     static async hiringApplication(user: UserJWTPayload, jobId: number): Promise<ApplicationResponse> {
         //Check job is exist in the DB
+
+        await this.checkIfCompany(user)
+
         const job = await prismaClient.job.findFirst({
             where: { id: jobId }
         })
@@ -45,6 +48,9 @@ export class ApplicationService {
     }
 
     static async getMyApplications(user: UserJWTPayload): Promise<ApplicationResponse[]> {
+        
+        await this.checkIfCompany(user)
+
         const apps = await prismaClient.application.findMany({
             where: { user_id: user.id },
             orderBy: { id: "asc" },
@@ -61,6 +67,8 @@ export class ApplicationService {
     } 
 
     static async cancelApplication(user: UserJWTPayload, idApp: number): Promise<ApplicationResponse> {
+
+        await this.checkIfCompany(user)
         //check if application
         const application = await prismaClient.application.findUnique({
             where: { id: idApp }
@@ -95,5 +103,17 @@ export class ApplicationService {
         });
 
         return toApplicationResponse(updated);
+    }
+
+    static async checkIfCompany(user: UserJWTPayload) {
+        const company = await prismaClient.company.findFirst({
+            where: { user_id: user.id }
+        });
+
+        if(company) {
+            throw new ResponseError(403, "Unauthorized action!")
+        }
+
+        return true
     }
 }

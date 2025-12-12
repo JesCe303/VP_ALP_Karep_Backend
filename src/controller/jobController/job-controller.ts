@@ -30,6 +30,10 @@ export class JobController {
         try {
             const jobId = Number(req.params.jobId);
             const response = await JobService.getJob(jobId);
+
+            res.status(200).json({
+                data: response
+            })
         } catch (error) {
             next(error);
         }

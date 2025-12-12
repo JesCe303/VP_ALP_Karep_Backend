@@ -21,8 +21,11 @@ export class ApplicationController {
     static async getMyApplication(req: UserRequest, res: Response, next: NextFunction) {
         try {
             const user = req.user!;
+            const response = await ApplicationService.getMyApplications(user);
             
-            const response = await ApplicationService.getMyApplications(user); 
+            res.status(200).json({
+                data: response
+            })
         } catch (error) {
             next(error);
         }

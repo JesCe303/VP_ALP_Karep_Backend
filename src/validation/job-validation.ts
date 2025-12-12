@@ -14,14 +14,15 @@ export class JobValidation {
         }).optional(),
 
         tags: z.array(
-                z.number({
-                    error: "Each tag ID must be a number!",
-                }), {
-                    error: "Tag must be an array!",}).optional()
-            .refine(
-                (ids) => !ids || new Set(ids).size === ids.length,
-                { message: "Tag cannot be duplicate!" }
-            ),
+            z.number({
+                message: "Each tag ID must be a number!"
+            })
+        )
+        .optional()
+        .refine(
+            (val) => val === undefined || Array.isArray(val),
+            { message: "Tags must be an array!" }
+        )
     })
 
     static readonly UPDATE: ZodType = z.object ({
@@ -36,13 +37,14 @@ export class JobValidation {
         }).optional(),
 
         tags: z.array(
-                z.number({
-                    error: "Each tag ID must be a number!",
-                }), {
-                    error: "Tag must be an array!",}).optional()
-            .refine(
-                (ids) => !ids || new Set(ids).size === ids.length,
-                { message: "Tag cannot be duplicate!" }
-            ),
+            z.number({
+                message: "Each tag ID must be a number!"
+            })
+        )
+        .optional()
+        .refine(
+            (val) => val === undefined || Array.isArray(val),
+            { message: "Tags must be an array!" }
+        )
     })
 }

@@ -35,6 +35,7 @@ export class JobService {
             where: {
                 company_id: company.id
             },
+            orderBy: { id: "asc" },
             include: {
                 job_tags: {
                     include: { tag: true }
@@ -142,9 +143,9 @@ export class JobService {
                 .map(word => word.trim())
                 .filter(word => word.length > 0)
 
-            where.or = [
+            where.OR = [
                 ...keywords.map(word => ({
-                    name: { containes: word, mode: "insensitive"}
+                    name: { contains: word, mode: "insensitive"}
                 })),
                 ...keywords.map(word => ({
                     description: { contains: word, mode: "insensitive" }
@@ -160,6 +161,8 @@ export class JobService {
                 }))
             ];
         }
+
+        console.log("WHERE CLAUSE:", JSON.stringify(where, null, 2));
 
         const jobs = await prismaClient.job.findMany({
             where, orderBy: { id: "asc" },

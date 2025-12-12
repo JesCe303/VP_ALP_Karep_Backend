@@ -29,15 +29,46 @@ export class LoginDevController {
             console.log("AUTH RAW HEADER BYTES:", Buffer.from(req.headers.authorization || "").toString("hex"));
 
             res.json({
-                message: "Dev Login successfully",
                 token,
-                user
             });
         
         } catch (error) {
             next(error);
         }   
     }
+
+    static async loginDevUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            let user = await prismaClient.user.findUnique({
+                where: { email: "devuser@example.com" }
+            });
+
+        // If user doesn't exist, create it
+            if (!user) {
+                user = await prismaClient.user.create({
+                    data: {
+                        name: "DevUser",
+                        email: "devuser@example.com",
+                        password: "userpass" // no hashing since Dev only
+                    }
+                });
+            }
+
+            const token = generateToken(
+                { id: user.id, name: user.name, email: user.email },
+                "30d"
+            );
+
+            res.json({
+                message: "Dev user logged in!",
+                token,
+                user
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
 
     static async companyConnect(req: Request, res: Response, next: NextFunction) {
         try {
