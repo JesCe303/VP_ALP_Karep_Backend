@@ -13,7 +13,7 @@ export class JobValidation {
             error: "The description must be a string!"
         }).optional(),
 
-        tag_ids: z.array(
+        tags: z.array(
                 z.number({
                     error: "Each tag ID must be a number!",
                 }), {
@@ -35,7 +35,7 @@ export class JobValidation {
             error: "Description must be a string!"
         }).optional(),
 
-        tag_ids: z.array(
+        tags: z.array(
                 z.number({
                     error: "Each tag ID must be a number!",
                 }), {

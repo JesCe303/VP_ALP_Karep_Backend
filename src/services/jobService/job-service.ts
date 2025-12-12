@@ -9,9 +9,11 @@ import { Validation } from "../../validation/validation";
 export class JobService {
     static async getAllJobs(): Promise<JobResponse[]> {
         const jobs = await prismaClient.job.findMany({
+            orderBy: { id: "asc" },
             include: {
                 job_tags: {
-                    include: { tag: true }
+                    include: { tag: true },
+                    orderBy: { tag_id: "asc" }
                 }
             }
         })
@@ -73,8 +75,8 @@ export class JobService {
                 name: validatedData.name,
                 description: validatedData.description ?? null,
                 company_id : company!.id,
-                job_tags: validatedData.tag_ids ? {
-                    create: validatedData.tag_ids.map(id => ({
+                job_tags: validatedData.tags ? {
+                    create: validatedData.tags.map(id => ({
                         tag: { connect: { id }}
                     }))
                 }
@@ -112,9 +114,9 @@ export class JobService {
             data: {
                 name: validatedData.name,
                 description: validatedData.description ?? null,
-                job_tags: validatedData.tag_ids ? {
+                job_tags: validatedData.tags ? {
                     deleteMany: {},
-                    create: validatedData.tag_ids.map(id => ({
+                    create: validatedData.tags.map(id => ({
                         tag: {connect: { id } }
                     }))
                 }
