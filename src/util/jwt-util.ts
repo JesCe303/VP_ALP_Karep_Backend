@@ -4,6 +4,10 @@ import { StringValue } from "ms"
 import { JWT_SECRET_KEY } from './env-util'
 import { UserJWTPayload } from '../model/user-request-model'
 
+if (!JWT_SECRET_KEY) {
+    throw new Error("JWT_SECRET_KEY is missing from environment variables");
+}
+
 export const generateToken = (
     payload: UserJWTPayload,
     expiryTime: StringValue = "30d"

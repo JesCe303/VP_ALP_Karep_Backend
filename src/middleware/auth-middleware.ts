@@ -16,20 +16,20 @@ export const authMiddleware = (req: UserRequest, res: Response, next: NextFuncti
         // So we split the string by space and take the second part ([1]), which is the actual token.
 
         if(!token) {
-            next(new ResponseError(401, "Unauthorized user!"))
+            return next(new ResponseError(401, "Unauthorized user! (A)"))
         }
 
         //Check if the token on the payload is really a token
         const payload = verifyToken(token!)
 
         //checking if the token is expired or not
-        if(payload) {
-            req.user = payload
-        } else {
-            next(new ResponseError(401, "Unauthorized user!"))
+        if(!payload) {
+            return next(new ResponseError(401, "Unauthorized User! (B)"))
         }
+
+        req.user = payload;
         //use next to go to the to do list endpoint
-        next()
+        return next()
     } catch (error) {
         next(error)
     }

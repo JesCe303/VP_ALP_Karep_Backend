@@ -26,6 +26,8 @@ export class LoginDevController {
                 "30d"
             );
 
+            console.log("AUTH RAW HEADER BYTES:", Buffer.from(req.headers.authorization || "").toString("hex"));
+
             res.json({
                 message: "Dev Login successfully",
                 token,

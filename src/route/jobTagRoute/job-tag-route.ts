@@ -4,7 +4,7 @@ import { JobTagController } from "../../controller/jobtagController/job-tag-cont
 
 export const jobtagRouter = express.Router();
 
-jobtagRouter.use(authMiddleware)
+jobtagRouter.use(authMiddleware);
 
 jobtagRouter.get("/jobtag-list", JobTagController.getAllJobTags)
 jobtagRouter.post("/jobtag/create", JobTagController.createJobTag)
