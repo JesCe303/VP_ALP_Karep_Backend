@@ -48,12 +48,11 @@ export function toJobResponse(
 export interface JobUpdate {
     name: string;
     description?: string;
-    tag_ids?: number[];
+    tags?: number[];
 }
 
 export interface JobCreate {
     name: string;
     description?: string;
-    company_id: number;
-    tag_ids?: number[];
+    tags?: number[];
 }
