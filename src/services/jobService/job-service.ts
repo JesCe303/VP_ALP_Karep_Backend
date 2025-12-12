@@ -162,8 +162,6 @@ export class JobService {
             ];
         }
 
-        console.log("WHERE CLAUSE:", JSON.stringify(where, null, 2));
-
         const jobs = await prismaClient.job.findMany({
             where, orderBy: { id: "asc" },
             include: {
