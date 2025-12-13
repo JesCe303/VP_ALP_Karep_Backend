@@ -1,0 +1,300 @@
+import { ResponseError } from "../../error/response-error";
+import { ApplicationCreate, ApplicationResponse, ApplicationUpdate, toApplicationResponse, toApplicationResponseList } from "../../model/application-model";
+import { UserJWTPayload } from "../../model/user-request-model";
+import { prismaClient } from "../../util/database-util";
+
+export class ApplicationService {
+    //hiring user application on hiring
+    static async hiringApplication(user: UserJWTPayload, jobId: number): Promise<ApplicationResponse> {
+        //Check job is exist in the DB
+
+        await this.checkIfCompany(user)
+
+        const job = await prismaClient.job.findFirst({
+            where: { id: jobId }
+        })
+
+        if (!job) {
+            throw new ResponseError(404, "Job not found!")
+        }
+
+        //Checking the database IF the job_id that the user hired in
+        //is the same, so double hiring which is an illegal action
+        const exist = await prismaClient.application.findFirst({
+            where: {
+                job_id: jobId,
+                user_id: user.id
+            }
+        });
+
+        if(exist) throw new ResponseError(400, "Already applied, denied")
+
+            const app = await prismaClient.application.create({
+                data: {
+                    status: "pending",
+                    user_id: user.id,
+                    job_id: jobId
+                },
+                include: {
+                    job: {
+                        include: {
+                            job_tags: { include: { tag: true }}
+                        }
+                    }
+                }
+            });
+
+            return toApplicationResponse(app);
+    }
+
+    static async getMyApplications(user: UserJWTPayload): Promise<ApplicationResponse[]> {
+        
+        await this.checkIfCompany(user)
+
+        const apps = await prismaClient.application.findMany({
+            where: { user_id: user.id },
+            orderBy: { id: "asc" },
+            include: {
+                job: {
+                    include: {
+                        job_tags: { include: {tag: true }}
+                    }
+                }
+            }
+        });
+
+        return toApplicationResponseList(apps)
+    } 
+
+    static async cancelApplication(user: UserJWTPayload, idApp: number): Promise<ApplicationResponse> {
+
+        await this.checkIfCompany(user)
+        //check if application
+        const application = await prismaClient.application.findUnique({
+            where: { id: idApp }
+        })
+
+        if(!application) {
+            throw new ResponseError(404, "No application has been made")
+        }
+
+        if(application.user_id !== user.id) {
+            throw new ResponseError(403, "Unauthorized Access!")
+        }
+
+        if(application.status !== "pending") {
+            throw new ResponseError(400, "You can only cancel application that is still in pending")
+        }
+
+        const updated = await prismaClient.application.update({
+            where: { id: idApp },
+            data: {
+                status: "cancelled"
+            },
+            include: {
+                job: {
+                    include: {
+                        job_tags: {
+                            include: { tag: true }
+                        }
+                    }
+                }
+            }
+        });
+
+        return toApplicationResponse(updated);
+    }
+
+    static async deleteApplication(user: UserJWTPayload, idApp: number) {
+        await this.checkIfCompany(user)
+        const application = await prismaClient.application.findFirst({
+            where: { id: idApp }
+        })
+
+        if(!application) {
+            throw new ResponseError(404, "No application is detected")
+        }
+
+        if(application.status !== "cancelled" && application.status !== "rejected") {
+            throw new ResponseError(400, "You can only delete an application that is already rejected/deleted")
+        }
+
+        if(application.user_id !== user.id) {
+            throw new ResponseError(403, "Unauthorized Access!")
+        }
+
+        await prismaClient.application.delete({
+            where: { id: idApp }
+        })
+    }
+
+    static async checkIfCompany(user: UserJWTPayload) {
+        const company = await prismaClient.company.findFirst({
+            where: { user_id: user.id }
+        });
+
+        if(company) {
+            throw new ResponseError(403, "Unauthorized action!")
+        }
+
+        return true
+    }
+    
+    static async getApplicationByCompanyId(
+        user: UserJWTPayload
+    ) {
+        const company = await prismaClient.company.findFirst({
+            where: { 
+                user_id: user.id 
+            }
+        });
+
+        if (!company) {
+            throw new ResponseError(400, "Company not found");
+        }
+
+        const applications = await prismaClient.application.findMany({
+            where: {
+                job: {
+                    company_id: company.id
+                }
+            },
+            include: {
+                job: {
+                    include: {
+                        job_tags: { 
+                            include: { 
+                                tag: true 
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    static async getApplicationByJobId(
+        user: UserJWTPayload,
+        jobId: number
+    ): Promise<ApplicationResponse[]> {
+        const company = await prismaClient.company.findFirst({
+            where: { 
+                user_id: user.id 
+            }
+        });
+
+        if (!company) {
+            throw new ResponseError(400, "Company not found");
+        }
+
+        const job = await prismaClient.job.findFirst({
+            where: { 
+                company_id: company.id, 
+                id: jobId 
+            }
+        });
+
+        if (!job) {
+            throw new ResponseError(400, "Job not found");
+        }
+
+        const applications = await prismaClient.application.findMany({
+            where: { 
+                job_id: jobId 
+            },
+            include: {
+                job: {
+                    include: {
+                        job_tags: { include: { tag: true }}
+                    }
+                }
+            }
+        });
+
+        return toApplicationResponseList(applications);
+    }
+
+    static async acceptApplication(
+        user: UserJWTPayload,
+        applicationId: number
+    ) {
+        const company = await prismaClient.company.findFirst({
+            where: { user_id: user.id }
+        });
+        
+        if (!company) {
+            throw new ResponseError(400, "Company not found");
+        }
+
+        const application = await prismaClient.application.findFirst({
+            where: { id: applicationId },
+            include: {
+                job: true
+            }
+        });
+
+        if (!application) {
+            throw new ResponseError(400, "Application not found");
+        }
+
+        if (application.job.company_id !== company.id) {
+            throw new ResponseError(403, "Unauthorized action");
+        }
+
+        await prismaClient.application.update({
+            where: { id: applicationId },
+            data: { status: "accepted" },
+            include: {
+                job: {
+                    include: {
+                        job_tags: { include: { tag: true }}
+                    }
+                }
+            }
+        });
+
+        return "Application accepted successfully";
+    }
+
+    static async rejectApplication(
+        user: UserJWTPayload,
+        applicationId: number
+    ) {
+        const company = await prismaClient.company.findFirst({
+            where: { user_id: user.id }
+        });
+
+        if (!company) {
+            throw new ResponseError(400, "Company not found");
+        }
+
+        const application = await prismaClient.application.findFirst({
+            where: { id: applicationId },
+            include: {
+                job: true
+            }
+        });
+
+        if (!application) {
+            throw new ResponseError(400, "Application not found");
+        }
+
+        if (application.job.company_id !== company.id) {
+            throw new ResponseError(403, "Unauthorized action");
+        }
+
+        await prismaClient.application.update({
+            where: { id: applicationId },
+            data: { status: "rejected" },
+            include: {
+                job: {
+                    include: {
+                        job_tags: { include: { tag: true }}
+                    }
+                }
+            }
+        });
+
+        return "Application rejected successfully";
+    }
+}
