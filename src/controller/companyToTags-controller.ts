@@ -63,7 +63,6 @@ export class CompanyToTagsController {
         next: NextFunction
     ) {
         try {
-            const companyId = Number(req.params.companyId);
             const tagId = Number(req.params.tagId);
 
             const response = await CompanyToTagsService.deleteCompanyToTags(companyId, tagId);
