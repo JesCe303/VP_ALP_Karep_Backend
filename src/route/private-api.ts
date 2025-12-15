@@ -4,6 +4,7 @@ import { CompanyController } from "../controller/company-controller"
 import { CompanyToTagsController } from "../controller/companyToTags-controller"
 import { ApplicationController } from "../controller/application-controller"
 import { NotificationController } from "../controller/notification-controller"
+import { CompanyTagController } from "../controller/companyTag-controller"
 
 export const privateRouter = express.Router()
 
@@ -19,3 +20,4 @@ privateRouter.put("/companies/applications/:applicationId/accept", ApplicationCo
 privateRouter.put("/companies/applications/:applicationId/reject", ApplicationController.rejectApplication)
 privateRouter.get("/users/notifications", NotificationController.getNotifications)
 privateRouter.delete("/users/notifications/:notificationId", NotificationController.deleteNotification)
+privateRouter.get("/company-tags", CompanyTagController.getAllCompanyTags)
