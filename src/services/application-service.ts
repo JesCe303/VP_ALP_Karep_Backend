@@ -1,7 +1,7 @@
-import { ResponseError } from "../../error/response-error";
-import { ApplicationCreate, ApplicationResponse, ApplicationUpdate, toApplicationResponse, toApplicationResponseList } from "../../model/application-model";
-import { UserJWTPayload } from "../../model/user-request-model";
-import { prismaClient } from "../../util/database-util";
+import { ResponseError } from "../error/response-error";
+import { ApplicationCreate, ApplicationResponse, ApplicationUpdate, toApplicationResponse, toApplicationResponseList } from "../model/application-model";
+import { UserJWTPayload } from "../model/user-request-model";
+import { prismaClient } from "../util/database-util";
 
 export class ApplicationService {
     //hiring user application on hiring

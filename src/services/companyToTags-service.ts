@@ -4,6 +4,7 @@ import { ResponseError } from "../error/response-error";
 import { Validation } from "../validation/validation";
 import { CompanyToTagsValidation } from "../validation/companyToTags-validation";
 import { CompanyToTags } from "../../generated/prisma/client";
+import { UserJWTPayload } from "../model/user-model";
 
 export class CompanyToTagsService {
     static async getCompanyToTagsByCompanyId(

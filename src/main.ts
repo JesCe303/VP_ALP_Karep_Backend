@@ -1,7 +1,8 @@
 import express from "express"
-import { PORT } from "../utils/env-util"
-import { publicRouter } from "./router/public-api"
+import { PORT } from "./util/env-util"
+import { publicRouter } from "./route/public-api"
 import { errorMiddleware } from "./middleware/error-middleware"
+import { privateRouter } from "./route/private-api";
 
 console.log("hai aku jece");
 
@@ -13,7 +14,7 @@ app.use(express.json())
 app.set('json spaces', 2);
 
 app.use("/api", publicRouter)
-
+app.use("/api", privateRouter)
 app.use(errorMiddleware)
 
 app.listen(PORT || 3000, () => {

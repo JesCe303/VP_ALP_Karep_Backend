@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { ApplicationService } from "../../services/appService/application-service";
-import { UserRequest } from "../../model/user-request-model";
+import { ApplicationService } from "../services/application-service";
+import { UserRequest } from "../model/user-request-model";
 
 export class ApplicationController {
     static async hiringApplication(req: UserRequest, res: Response, next: NextFunction) {

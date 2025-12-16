@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { NotificationCreateRequest, NotificationResponse, toNotificationResponseList } from "../model/notification-model";
 import { prismaClient } from "../util/database-util";
 import { ResponseError } from "../error/response-error";
+import { UserJWTPayload } from "../model/user-model";
 
 export class NotificationService {
     static async getNotifications(

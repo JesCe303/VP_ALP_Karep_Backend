@@ -1,5 +1,6 @@
 import { NextFunction, Response } from "express";
 import { CompanyTagService } from "../services/companyTag-service";
+import { UserRequest } from "../model/user-request-model";
 
 export class CompanyTagController {
     static async getAllCompanyTags(

@@ -20,4 +20,5 @@ privateRouter.put("/companies/applications/:applicationId/accept", ApplicationCo
 privateRouter.put("/companies/applications/:applicationId/reject", ApplicationController.rejectApplication)
 privateRouter.get("/users/notifications", NotificationController.getNotifications)
 privateRouter.delete("/users/notifications/:notificationId", NotificationController.deleteNotification)
+
 privateRouter.get("/company-tags", CompanyTagController.getAllCompanyTags)
