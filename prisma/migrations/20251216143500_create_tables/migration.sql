@@ -15,6 +15,7 @@ CREATE TABLE "notifications" (
     "notification_id" SERIAL NOT NULL,
     "title" VARCHAR(100) NOT NULL,
     "subtitle" TEXT,
+    "date" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL,
 
     CONSTRAINT "notifications_pkey" PRIMARY KEY ("notification_id")

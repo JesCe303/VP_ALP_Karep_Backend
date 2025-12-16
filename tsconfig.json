@@ -1,6 +1,6 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
-  "include": ["src/**/*", "test-prisma.ts"],
+  "include": ["src/**/*", "test-prisma.ts", "prisma/**/*"],
   "compilerOptions": {
     // File Layout
     // "rootDir": "./src",
@@ -12,7 +12,7 @@
     "moduleResolution": "node",
     "target": "es2018",
     "lib": ["ES2018"],
-    "types": [],
+    "types": ["node"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
