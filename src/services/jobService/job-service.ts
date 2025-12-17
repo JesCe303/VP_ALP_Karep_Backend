@@ -49,7 +49,7 @@ export class JobService {
     static async getJob(jobId: number): Promise<JobResponse> {
         const job = await prismaClient.job.findUnique({
             where: {
-                id: jobId
+                id: Number(jobId)
             },
             include: {
                 job_tags: {

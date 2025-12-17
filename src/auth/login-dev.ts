@@ -29,7 +29,9 @@ export class LoginDevController {
             );
             
             res.json({
+                message: "Dev is loginned",
                 token,
+                user
             });
         
         } catch (error) {
@@ -90,7 +92,7 @@ export class LoginDevController {
 
         res.json({
             message: "Company Created succefully",
-            company
+            company,
         })
     } catch (error) {
             next(error)
