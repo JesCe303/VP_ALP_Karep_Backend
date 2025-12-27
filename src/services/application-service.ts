@@ -142,7 +142,7 @@ export class ApplicationService {
     
     static async getApplicationByCompanyId(
         user: UserJWTPayload
-    ) {
+    ): Promise<ApplicationResponse[]> {
         const company = await prismaClient.company.findFirst({
             where: { 
                 user_id: user.id 
@@ -171,6 +171,8 @@ export class ApplicationService {
                 }
             }
         });
+
+        return toApplicationResponseList(applications);
     }
 
     static async getApplicationByJobId(

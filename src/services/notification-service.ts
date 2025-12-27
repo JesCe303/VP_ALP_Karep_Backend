@@ -21,7 +21,7 @@ export class NotificationService {
         user: UserJWTPayload,
         notificationId: number
     ) {
-        const notification = await PrismaClient.notification.findFirst({
+        const notification = await prismaClient.notification.findFirst({
             where: {
                 id: notificationId,
                 user_id: user.id
