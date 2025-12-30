@@ -5,6 +5,8 @@ import { CompanyToTagsController } from "../controller/companyToTags-controller"
 import { ApplicationController } from "../controller/application-controller"
 import { NotificationController } from "../controller/notification-controller"
 import { CompanyTagController } from "../controller/companyTag-controller"
+import { JobController } from "../controller/job-controller"
+import { JobTagController } from "../controller/jobTags-controller"
 
 export const privateRouter = express.Router()
 
@@ -14,6 +16,11 @@ privateRouter.get("/companies/profile", CompanyController.getCompanyByUserId)
 privateRouter.put("/companies/profile", CompanyController.updateCompany)
 privateRouter.post("/companies/profile/tags", CompanyToTagsController.createCompanyToTags)
 privateRouter.delete("/companies/profile/tags/:tagId", CompanyToTagsController.deleteCompanyToTags)
+privateRouter.post("/companies/jobs", JobController.createJob)
+privateRouter.put("/companies/jobs/:jobId", JobController.updateJob)
+privateRouter.delete("/companies/jobs/:jobId", JobController.deleteJob)
+privateRouter.get("/companies/jobs", JobController.getAllJobsByCompany)
+privateRouter.get("/companies/jobs/:jobId", JobController.getJob)
 privateRouter.get("/companies/applications", ApplicationController.getApplicationByCompanyId)
 privateRouter.get("/companies/jobs/:jobId/applications", ApplicationController.getApplicationByJobId)
 privateRouter.put("/companies/applications/:applicationId/accept", ApplicationController.acceptApplication)
@@ -22,3 +29,4 @@ privateRouter.get("/users/notifications", NotificationController.getNotification
 privateRouter.delete("/users/notifications/:notificationId", NotificationController.deleteNotification)
 
 privateRouter.get("/company-tags", CompanyTagController.getAllCompanyTags)
+privateRouter.get("/jobtag-list", JobTagController.getAllJobTags)
