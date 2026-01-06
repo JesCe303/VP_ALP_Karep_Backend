@@ -1,5 +1,6 @@
 import { ResponseError } from "../error/response-error";
 import { CompanyResponse, CompanyUpdateRequest, toCompanyResponse, toCompanyResponseList } from "../model/company-model";
+import { UserJWTPayload } from "../model/user-request-model";
 import { prismaClient } from "../util/database-util";
 import { CompanyValidation } from "../validation/company-validation";
 import { Validation } from "../validation/validation";
@@ -88,7 +89,6 @@ export class CompanyService {
     static async updateCompany(
         user: UserJWTPayload,
         reqData: CompanyUpdateRequest,
-        companyId: number
     ) {
         const validatedData = Validation.validate(
             CompanyValidation.UPDATE,
@@ -97,7 +97,6 @@ export class CompanyService {
 
         const company = await prismaClient.company.findFirst({
             where: {
-                id: companyId,
                 user_id: user.id
             }
         });
@@ -109,7 +108,6 @@ export class CompanyService {
         await prismaClient.company.update({
             where: {
                 user_id: user.id,
-                id: companyId
             },
             data: {
                 name: validatedData.name,

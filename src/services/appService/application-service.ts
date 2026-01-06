@@ -139,4 +139,164 @@ export class ApplicationService {
 
         return true
     }
+
+     static async getApplicationByCompanyId(
+        user: UserJWTPayload
+    ): Promise<ApplicationResponse[]> {
+        const company = await prismaClient.company.findFirst({
+            where: { 
+                user_id: user.id 
+            }
+        });
+
+        if (!company) {
+            throw new ResponseError(400, "Company not found");
+        }
+
+        const applications = await prismaClient.application.findMany({
+            where: {
+                job: {
+                    company_id: company.id
+                }
+            },
+            include: {
+                job: {
+                    include: {
+                        job_tags: { 
+                            include: { 
+                                tag: true 
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        return toApplicationResponseList(applications);
+    }
+
+    static async getApplicationByJobId(
+        user: UserJWTPayload,
+        jobId: number
+    ): Promise<ApplicationResponse[]> {
+        const company = await prismaClient.company.findFirst({
+            where: { 
+                user_id: user.id 
+            }
+        });
+
+        if (!company) {
+            throw new ResponseError(400, "Company not found");
+        }
+
+        const job = await prismaClient.job.findFirst({
+            where: { 
+                company_id: company.id, 
+                id: jobId 
+            }
+        });
+
+        if (!job) {
+            throw new ResponseError(400, "Job not found");
+        }
+
+        const applications = await prismaClient.application.findMany({
+            where: { 
+                job_id: jobId 
+            },
+            include: {
+                job: {
+                    include: {
+                        job_tags: { include: { tag: true }}
+                    }
+                }
+            }
+        });
+
+        return toApplicationResponseList(applications);
+    }
+
+    static async acceptApplication(
+        user: UserJWTPayload,
+        applicationId: number
+    ) {
+        const company = await prismaClient.company.findFirst({
+            where: { user_id: user.id }
+        });
+        
+        if (!company) {
+            throw new ResponseError(400, "Company not found");
+        }
+
+        const application = await prismaClient.application.findFirst({
+            where: { id: applicationId },
+            include: {
+                job: true
+            }
+        });
+
+        if (!application) {
+            throw new ResponseError(400, "Application not found");
+        }
+
+        if (application.job.company_id !== company.id) {
+            throw new ResponseError(403, "Unauthorized action");
+        }
+
+        await prismaClient.application.update({
+            where: { id: applicationId },
+            data: { status: "accepted" },
+            include: {
+                job: {
+                    include: {
+                        job_tags: { include: { tag: true }}
+                    }
+                }
+            }
+        });
+
+        return "Application accepted successfully";
+    }
+
+    static async rejectApplication(
+        user: UserJWTPayload,
+        applicationId: number
+    ) {
+        const company = await prismaClient.company.findFirst({
+            where: { user_id: user.id }
+        });
+
+        if (!company) {
+            throw new ResponseError(400, "Company not found");
+        }
+
+        const application = await prismaClient.application.findFirst({
+            where: { id: applicationId },
+            include: {
+                job: true
+            }
+        });
+
+        if (!application) {
+            throw new ResponseError(400, "Application not found");
+        }
+
+        if (application.job.company_id !== company.id) {
+            throw new ResponseError(403, "Unauthorized action");
+        }
+
+        await prismaClient.application.update({
+            where: { id: applicationId },
+            data: { status: "rejected" },
+            include: {
+                job: {
+                    include: {
+                        job_tags: { include: { tag: true }}
+                    }
+                }
+            }
+        });
+
+        return "Application rejected successfully";
+    }
 }

@@ -1,6 +1,7 @@
 import { NextFunction, Response } from "express";
 import { CompanyService } from "../services/company-service";
 import { CompanyUpdateRequest } from "../model/company-model";
+import { UserRequest } from "../model/user-request-model";
 
 export class CompanyController {
     static async getAllCompanies(
@@ -75,11 +76,9 @@ export class CompanyController {
         next: NextFunction
     ) {
         try {
-            const userId = Number(req.params.userId);
-            const companyId = Number(req.params.companyId);
             const reqData = req.body as CompanyUpdateRequest;
 
-            const response = await CompanyService.updateCompany(userId, reqData, companyId);
+            const response = await CompanyService.updateCompany(req.user!, reqData);
 
             res.status(200).json({
                 data: response
