@@ -5,26 +5,26 @@ export class UserValidation {
 
         username: z
         .string({
-            error: "Username must be string",
+            message: "Username must be string",
         })
         .min(1, {
-            error: "Username cannot be empty",
+            message: "Username cannot be empty",
         }),
 
         email: z
         .email({
-            error: "Email format is invalid",
+            message: "Email format is invalid",
         })
         .min(1, {
-            error: "Email cannot be empty",
+            message: "Email cannot be empty",
         }),
 
         password: z
         .string({
-            error: "Password must be string",
+            message: "Password must be string",
         })
         .min(8, {
-            error: "Password must be at least 8 characters",
+            message: "Password must be at least 8 characters",
         }),
 
         address: z.string().optional(),
@@ -35,24 +35,24 @@ export class UserValidation {
     static readonly LOGIN: ZodType = z.object({
          email: z
         .email({
-            error: "Email format is invalid",
+            message: "Email format is invalid",
         })
         .min(1, {
-            error: "Email cannot be empty",
+            message: "Email cannot be empty",
         }),
 
         password: z
         .string({
-            error: "Password must be string",
+            message: "Password must be string",
         })
         .min(8, {
-            error: "Password must be at least 8 characters",
+            message: "Password must be at least 8 characters",
         }),
     });
 
     static readonly UPDATE_PROFILE: ZodType = z.object({
         name: z.string().min(1, {
-            error: "Name cannot be empty"
+            message: "Name cannot be empty"
         }).optional(),
         address: z.string().optional(),
         phone_number: z.string().optional(),
@@ -60,16 +60,36 @@ export class UserValidation {
         message: "At least one field must be provided"
     });
 
+    static readonly UPDATE_EMAIL: ZodType = z.object({
+        current_password: z.string().min(1, {
+            message: "Current password is required"
+        }),
+        new_email: z.email({
+            message: "Email format is invalid"
+        }).min(1, {
+            message: "New email cannot be empty"
+        }),
+    });
+
+    static readonly UPDATE_PASSWORD: ZodType = z.object({
+        current_password: z.string().min(1, {
+            message: "Current password is required"
+        }),
+        new_password: z.string().min(8, {
+            message: "New password must be at least 8 characters"
+        }),
+    });
+
     static readonly EXPERIENCE: ZodType = z.object({
         title: z.string().min(1, {
-            error: "Title cannot be empty"
+            message: "Title cannot be empty"
         }),
         description: z.string().optional(),
     });
 
     static readonly ACHIEVEMENT: ZodType = z.object({
         title: z.string().min(1, {
-            error: "Title cannot be empty"
+            message: "Title cannot be empty"
         }),
         description: z.string().optional(),
     });

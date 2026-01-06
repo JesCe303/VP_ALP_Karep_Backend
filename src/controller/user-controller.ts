@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction } from 'express';
-import { AchievementRequest, AchievementResponse, ExperienceRequest, ExperienceResponse, LoginUserRequest, ProfileResponse, RegisterUserRequest, UpdateProfileRequest, UserResponse } from '../model/user-model';
+import { AchievementRequest, AchievementResponse, ExperienceRequest, ExperienceResponse, LoginUserRequest, ProfileResponse, RegisterUserRequest, UpdateEmailRequest, UpdateEmailResponse, UpdatePasswordRequest, UpdatePasswordResponse, UpdateProfileRequest, UserResponse } from '../model/user-model';
 import { User } from '../../generated/prisma/client';
 import { UserServices } from '../services/user-services';
 import { UserRequest } from '../model/user-request-model';
@@ -55,6 +55,38 @@ export class UserController {
         try {
             const userId = req.user!.id;
             const response: ProfileResponse = await UserServices.getProfile(userId);
+
+            res.status(200).json({
+                data: response
+            })
+        }
+        catch (error) {
+            next(error);
+        }
+    }
+
+    // Update Email
+    static async updateEmail(req: UserRequest, res: Response, next: NextFunction) {
+        try {
+            const userId = req.user!.id;
+            const request: UpdateEmailRequest = req.body as UpdateEmailRequest;
+            const response: UpdateEmailResponse = await UserServices.updateEmail(userId, request);
+
+            res.status(200).json({
+                data: response
+            })
+        }
+        catch (error) {
+            next(error);
+        }
+    }
+
+    // Update Password
+    static async updatePassword(req: UserRequest, res: Response, next: NextFunction) {
+        try {
+            const userId = req.user!.id;
+            const request: UpdatePasswordRequest = req.body as UpdatePasswordRequest;
+            const response: UpdatePasswordResponse = await UserServices.updatePassword(userId, request);
 
             res.status(200).json({
                 data: response

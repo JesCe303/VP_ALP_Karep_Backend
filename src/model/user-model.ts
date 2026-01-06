@@ -52,6 +52,27 @@ export interface UpdateProfileRequest {
     phone_number?: string;
 }
 
+// Update Email
+export interface UpdateEmailRequest {
+    current_password: string;
+    new_email: string;
+}
+
+export interface UpdateEmailResponse {
+    message: string;
+    email: string;
+}
+
+// Update Password
+export interface UpdatePasswordRequest {
+    current_password: string;
+    new_password: string;
+}
+
+export interface UpdatePasswordResponse {
+    message: string;
+}
+
 export interface ProfileResponse {
     id: number;
     email: string;

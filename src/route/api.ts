@@ -10,6 +10,8 @@ apiRouter.use(authMiddleware)
 // Profile routes
 apiRouter.get("/profile", UserController.getProfile)
 apiRouter.put("/profile", UserController.updateProfile)
+apiRouter.put("/profile/email", UserController.updateEmail)
+apiRouter.put("/profile/password", UserController.updatePassword)
 
 // Experience routes
 apiRouter.post("/experiences", UserController.createExperience)

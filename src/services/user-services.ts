@@ -1,6 +1,6 @@
 import { validate } from "uuid";
 import { ResponseError } from "../error/response-error";
-import { AchievementRequest, AchievementResponse, ExperienceRequest, ExperienceResponse, LoginUserRequest, ProfileResponse, RegisterUserRequest, toAchievementResponse, toExperienceResponse, toProfileResponse, toUserResponse, UpdateProfileRequest, UserResponse } from "../model/user-model";
+import { AchievementRequest, AchievementResponse, ExperienceRequest, ExperienceResponse, LoginUserRequest, ProfileResponse, RegisterUserRequest, toAchievementResponse, toExperienceResponse, toProfileResponse, toUserResponse, UpdateEmailRequest, UpdateEmailResponse, UpdatePasswordRequest, UpdatePasswordResponse, UpdateProfileRequest, UserResponse } from "../model/user-model";
 import { prismaClient } from "../util/database-util";
 import { UserValidation } from "../validation/user-validation";
 import { Validation } from "../validation/validation";
@@ -114,6 +114,109 @@ export class UserServices {
         }
 
         return toProfileResponse(user)
+    }
+
+    // Update Email
+    static async updateEmail(userId: number, request: UpdateEmailRequest): Promise<UpdateEmailResponse> {
+        const validatedData = Validation.validate(
+            UserValidation.UPDATE_EMAIL,
+            request
+        )
+
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
+        if (!user) {
+            throw new ResponseError(404, "User not found");
+        }
+
+        // Verify current password
+        const passwordIsValid = await bcrypt.compare(validatedData.current_password, user.password);
+
+        if (!passwordIsValid) {
+            throw new ResponseError(400, "Current password is incorrect");
+        }
+
+        // Check if new email already exists
+        const existingEmail = await prismaClient.user.findFirst({
+            where: {
+                email: validatedData.new_email,
+                NOT: {
+                    id: userId
+                }
+            }
+        })
+
+        if (existingEmail) {
+            throw new ResponseError(400, "Email already exists");
+        }
+
+        // Update email
+        await prismaClient.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                email: validatedData.new_email
+            }
+        })
+
+        return {
+            message: "Email updated successfully",
+            email: validatedData.new_email
+        }
+    }
+
+    // Update Password
+    static async updatePassword(userId: number, request: UpdatePasswordRequest): Promise<UpdatePasswordResponse> {
+        const validatedData = Validation.validate(
+            UserValidation.UPDATE_PASSWORD,
+            request
+        )
+
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
+        if (!user) {
+            throw new ResponseError(404, "User not found");
+        }
+
+        // Verify current password
+        const passwordIsValid = await bcrypt.compare(validatedData.current_password, user.password);
+
+        if (!passwordIsValid) {
+            throw new ResponseError(400, "Current password is incorrect");
+        }
+
+        // Check if new password is same as current
+        const samePassword = await bcrypt.compare(validatedData.new_password, user.password);
+
+        if (samePassword) {
+            throw new ResponseError(400, "New password must be different from current password");
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(validatedData.new_password, 10);
+
+        // Update password
+        await prismaClient.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                password: hashedPassword
+            }
+        })
+
+        return {
+            message: "Password updated successfully"
+        }
     }
 
     // CRUD Experience
