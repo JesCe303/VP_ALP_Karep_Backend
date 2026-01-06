@@ -71,13 +71,17 @@ export class JobService {
             where: { user_id: user.id }
         })
         const validatedData = Validation.validate(JobValidation.CREATE, reqData)
+        
+        // Remove duplicate tags
+        const uniqueTags = validatedData.tags ? [...new Set(validatedData.tags)] : undefined;
+        
         const job = await prismaClient.job.create({
             data: {
                 name: validatedData.name,
                 description: validatedData.description ?? null,
                 company_id : company!.id,
-                job_tags: validatedData.tags ? {
-                    create: validatedData.tags.map(id => ({
+                job_tags: uniqueTags ? {
+                    create: uniqueTags.map(id => ({
                         tag: { connect: { id }}
                     }))
                 }
@@ -110,14 +114,17 @@ export class JobService {
             throw new ResponseError(404, "Job not found or unauthorize access")
         }
 
+        // Remove duplicate tags
+        const uniqueTags = validatedData.tags ? [...new Set(validatedData.tags)] : undefined;
+
         const updatedJob = await prismaClient.job.update({
             where: { id: jobId },
             data: {
                 name: validatedData.name,
                 description: validatedData.description ?? null,
-                job_tags: validatedData.tags ? {
+                job_tags: uniqueTags ? {
                     deleteMany: {},
-                    create: validatedData.tags.map(id => ({
+                    create: uniqueTags.map(id => ({
                         tag: {connect: { id } }
                     }))
                 }
