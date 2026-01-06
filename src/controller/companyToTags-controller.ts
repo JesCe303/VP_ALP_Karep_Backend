@@ -1,6 +1,7 @@
 import { NextFunction, Response } from "express";
 import { CompanyToTagsService } from "../services/companyToTags-service";
 import { CompanyToTagsCreateRequest } from "../model/companyToTags-model";
+import { UserRequest } from "../model/user-request-model";
 
 export class CompanyToTagsController {
     static async getCompanyToTagsByCompanyId(

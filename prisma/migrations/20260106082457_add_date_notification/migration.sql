@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "notifications" ADD COLUMN     "date" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP;
