@@ -1,6 +1,6 @@
 import express from "express"
 import { PORT } from "./util/env-util";
-import { publicRouter } from "./route/public-api";
+import { publicRouterFakeLog } from "./route/publicRouter";
 import { apiRouter } from "./route/api"
 import { errorMiddleware } from "./middleware/error-middleware"
 import { jobtagRouter } from "./route/jobTagRoute/job-tag-route";
@@ -21,7 +21,7 @@ app.use(express.json())
 
 //Just JSON output pretty
 app.set('json spaces', 2);
-app.use("/api", publicRouter)
+app.use("/api", publicRouterFakeLog)
 app.use("/api", privateRouter)
 app.use("/api", jobtagRouter)
 app.use("/api", jobRouter)
