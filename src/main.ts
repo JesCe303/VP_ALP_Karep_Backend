@@ -21,7 +21,6 @@ app.use(express.json())
 //Just JSON output pretty
 app.set('json spaces', 2);
 
-app.use("/api", publicRouter)
 app.use("/api", jobtagRouter)
 app.use("/api", jobRouter)
 app.use("/api", appRouter)
