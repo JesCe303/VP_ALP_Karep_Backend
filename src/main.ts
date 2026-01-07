@@ -26,7 +26,6 @@ app.use("/api", privateRouter)
 app.use("/api", jobtagRouter)
 app.use("/api", jobRouter)
 app.use("/api", appRouter)
-app.use("/api", publicRouter)
 app.use("/api", apiRouter)
 
 app.use(errorMiddleware)
