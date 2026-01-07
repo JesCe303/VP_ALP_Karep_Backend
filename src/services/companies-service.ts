@@ -2,7 +2,7 @@ import { ResponseError } from "../error/response-error";
 import { CompanyResponse, CompanyUpdateRequest, toCompanyResponse, toCompanyResponseList } from "../model/companies-model";
 import { UserJWTPayload } from "../model/user-request-model";
 import { prismaClient } from "../util/database-util";
-import { CompanyValidation } from "../validation/company-validation";
+import { CompanyValidation } from "../validation/companies-validation";
 import { Validation } from "../validation/validation";
 
 export class CompanyService {
