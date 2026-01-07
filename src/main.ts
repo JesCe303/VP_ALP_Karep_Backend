@@ -1,6 +1,6 @@
 import express from "express"
 import { PORT } from "./util/env-util";
-import { publicRouter } from "./route/publicRouter";
+import { publicRouter } from "./route/public-api";
 import { apiRouter } from "./route/api"
 import { errorMiddleware } from "./middleware/error-middleware"
 import { jobtagRouter } from "./route/jobTagRoute/job-tag-route";
@@ -24,6 +24,7 @@ app.set('json spaces', 2);
 app.use("/api", jobtagRouter)
 app.use("/api", jobRouter)
 app.use("/api", appRouter)
+app.use("/api", publicRouter)
 app.use("/api", apiRouter)
 
 app.use(errorMiddleware)
