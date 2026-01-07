@@ -45,7 +45,6 @@ model Notification {
   title           String  @db.VarChar(100)
   subtitle        String? @db.Text
   date            DateTime @default(now()) @db.Timestamp(6)
-
   user_id         Int
   user            User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
@@ -74,7 +73,6 @@ model Achievement {
   @@map("achievements")
 }
 
-// ================================================================================================================
 
 //Company
 model Company {
@@ -121,7 +119,6 @@ model CompanyTag {
   @@map("company_tag")
 }
 
-// ================================================================================================================
 
 //Model Job
 model Job {

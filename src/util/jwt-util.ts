@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken'
-//import { UserJWTPayload } from '../models/user-model'
+import { UserJWTPayload } from '../model/user-request-model'
 import { StringValue } from "ms"
 import { JWT_SECRET_KEY } from './env-util'
-import { UserJWTPayload } from '../model/user-request-model'
 
 if (!JWT_SECRET_KEY) {
     throw new Error("JWT_SECRET_KEY is missing from environment variables");

@@ -24,7 +24,7 @@ export class LoginDevController {
             }
 
             const token = generateToken(
-                { id: user.id, name: user.name, email: user.email },
+                { id: user.id, username: user.name, email: user.email },
                 "30d"
             );
             
@@ -57,7 +57,7 @@ export class LoginDevController {
             }
 
             const token = generateToken(
-                { id: user.id, name: user.name, email: user.email },
+                { id: user.id, username: user.name, email: user.email },
                 "30d"
             );
 
