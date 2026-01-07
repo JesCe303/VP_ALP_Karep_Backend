@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
-import { CompanyService } from "../services/company-service";
-import { CompanyUpdateRequest } from "../model/company-model";
+import { CompanyService } from "../services/companies-service";
+import { CompanyUpdateRequest } from "../model/companies-model";
 import { UserRequest } from "../model/user-request-model";
 
 export class CompanyController {

@@ -1,6 +1,6 @@
 import express from "express"
 import { authMiddleware } from "../middleware/auth-middleware"
-import { CompanyController } from "../controller/company-controller"
+import { CompanyController } from "../controller/companies-controller"
 import { CompanyToTagsController } from "../controller/companyToTags-controller"
 import { ApplicationController } from "../controller/appController/application-controller"
 import { NotificationController } from "../controller/notification-controller"
