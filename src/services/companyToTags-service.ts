@@ -4,6 +4,7 @@ import { ResponseError } from "../error/response-error";
 import { Validation } from "../validation/validation";
 import { CompanyToTagsValidation } from "../validation/companyToTags-validation";
 import { CompanyToTags } from "../../generated/prisma/client";
+import { UserJWTPayload } from "../model/user-model";
 
 export class CompanyToTagsService {
     static async getCompanyToTagsByCompanyId(
@@ -73,14 +74,24 @@ export class CompanyToTagsService {
     }
 
     static async deleteCompanyToTags(
-        companyId: number,
+        user: UserJWTPayload,
         tagId: number
     ): Promise<String> {
-        await this.checkCompanyToTagsIsEmpty(companyId, tagId);
+        const company = await prismaClient.company.findFirst({
+            where: { 
+                user_id: user.id 
+            }
+        });
+
+        if (!company) {
+            throw new ResponseError(400, "Company not found");
+        }
+
+        await this.checkCompanyToTagsIsEmpty(company.id, tagId);
 
         await prismaClient.companyToTags.deleteMany({
             where: {
-                company_id: companyId,
+                company_id: company.id,
                 company_tag_id: tagId,
             },
         });
