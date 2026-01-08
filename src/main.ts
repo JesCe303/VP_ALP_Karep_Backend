@@ -1,12 +1,13 @@
 import express from "express"
 import { PORT } from "./util/env-util";
-import { publicRouter } from "./route/publicRouter";
 import { apiRouter } from "./route/api"
 import { errorMiddleware } from "./middleware/error-middleware"
 import { jobtagRouter } from "./route/jobTagRoute/job-tag-route";
 import { jobRouter } from "./route/jobRoute/job-route";
 import { appRouter } from "./route/appRoute/application-route";
 import { privateRouter } from "./route/private-router";
+
+import { publicRouter } from "./route/public-api";
 
 console.log("hai aku jece");
 
